@@ -155,3 +155,19 @@ main {
 .Detail:hover .editButton {
   opacity: 1;
 }
+
+@media screen and (max-width: 30rem) {
+  .generalContainer {
+    flex-direction: column;
+    .generalInfo {
+      word-wrap: break-word;
+    }
+  }
+
+  .container {
+    form {
+      @extend %for-form;
+      width: 80%;
+    }
+  }
+}

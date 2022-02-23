@@ -1,0 +1,157 @@
+$shadow: 0.2rem 0.2rem 0.3rem black;
+
+%for-form {
+  display: flex;
+  text-align: center;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+%for-input {
+  margin-top: 0.4rem;
+  box-shadow: $shadow;
+  padding: 0.4rem;
+  outline: none;
+  border: none;
+}
+
+%for-editButton {
+  display: none;
+}
+
+body,
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+body {
+  padding: 0;
+  background-color: gray;
+}
+
+main {
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  height: auto;
+  margin-top: 2rem;
+  border: 0.1rem solid black;
+  box-shadow: $shadow;
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 0.6rem;
+  .title {
+    text-align: center;
+  }
+}
+
+// for personal info
+.generalContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+
+  form {
+    @extend %for-form;
+  }
+  input {
+    @extend %for-input;
+  }
+  .editButton {
+    @extend %for-editButton;
+  }
+}
+
+.generalContainer:hover .editButton {
+  opacity: 1;
+}
+
+// for edit button
+.editButton {
+  opacity: 0;
+  button {
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background-color: transparent;
+    padding: 0.3rem;
+  }
+}
+
+.saveButton {
+  font-size: 1.2rem;
+  padding: 0.2rem 1.2rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  letter-spacing: 0.1rem;
+  background-color: #9bd45f;
+  border-radius: 0.3rem;
+  box-shadow: $shadow;
+  margin-top: 0.4rem;
+}
+
+.unActive {
+  display: none !important;
+}
+.editActive {
+  display: block !important;
+}
+
+// for education and experience
+.container {
+  display: flex;
+  flex-direction: column;
+  form {
+    @extend %for-form;
+    width: 30%;
+  }
+  input {
+    @extend %for-input;
+    margin-top: 0;
+  }
+  label {
+    align-self: flex-start;
+    margin-top: 0.5rem;
+  }
+}
+
+.addButton {
+  border: none;
+  cursor: pointer;
+  background-color: transparent;
+  color: blue;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.cancelButton {
+  color: red;
+  border: 1px solid red;
+  background-color: transparent;
+  padding: 0.2rem 1.2rem;
+  margin-left: 0.4rem;
+  border-radius: 0.4rem;
+}
+
+// for education experience details
+.Detail {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  .year {
+    margin: 0;
+    align-self: center;
+  }
+  .subInfo {
+    margin: 0;
+    text-align: center;
+  }
+}
+
+.Detail:hover .editButton {
+  opacity: 1;
+}

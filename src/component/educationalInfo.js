@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faPenFancy } from '@fortawesome/free-solid-svg-icons';
 
@@ -31,25 +31,21 @@ function DisplayEdu(props) {
   );
 }
 
-class EducationInfo extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      edu: {
-        course: '',
-        clgName: '',
-        startYear: '',
-        endYear: '',
-        city: '',
-      },
-      data: [],
-      index: '',
-      isActive: true,
-      isEdit: true,
-    };
-  }
-  validation = () => {
-    const { course, clgName, startYear, endYear, city } = this.state.edu;
+function EducationInfo() {
+  const [edu, setEdu] = useState({
+    course: '',
+    clgName: '',
+    startYear: '',
+    endYear: '',
+    city: '',
+  });
+  const [data, setData] = useState([]);
+  const [index, setIndex] = useState(' ');
+  const [isEdit, setIsEdit] = useState(true);
+  const [className, setClassName] = useState('unActive');
+
+  const validation = () => {
+    const { course, clgName, startYear, endYear, city } = edu;
     if (!course || !clgName || !startYear || !endYear || !city) {
       alert('Please make sure all fields');
       return false;
@@ -57,141 +53,121 @@ class EducationInfo extends React.Component {
     return true;
   };
 
-  cancel = (e) => {
+  const cancel = (e) => {
     e.preventDefault();
-    this.close();
+    close();
   };
 
-  showForm = () => {
-    this.setState({
-      isActive: false,
+  const showForm = () => {
+    setClassName(' ');
+  };
+
+  const close = () => {
+    setEdu({
+      course: '',
+      clgName: '',
+      startYear: '',
+      endYear: '',
+      city: '',
     });
+    setClassName('unActive');
+    setIndex(' ');
+    setIsEdit(true);
   };
 
-  close = () => {
-    this.setState({
-      edu: {
-        course: '',
-        clgName: '',
-        startYear: '',
-        endYear: '',
-        city: '',
-      },
-      isActive: true,
-      isEdit: true,
-      index: '  ',
-    });
+  const handleEdit = (e) => {
+    showForm();
+    setEdu(Object.assign(data[Number(e.target.id)]));
+    setIndex(e.target.id);
+    setIsEdit(false);
   };
 
-  handleEdit = (e) => {
-    this.showForm();
-    this.setState({
-      isEdit: false,
-      index: e.target.id,
-      edu: Object.assign(this.state.data[Number(e.target.id)]),
-    });
+  const handleChange = (e) => {
+    setEdu({ ...edu, [e.target.name]: e.target.value });
   };
 
-  handleChange = (e) => {
-    this.setState({
-      edu: { ...this.state.edu, [e.target.name]: e.target.value },
-    });
-  };
-
-  submitForm = (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
-    if (this.validation()) {
-      let temp = this.state.data;
-      if (!this.state.isEdit) {
-        temp[Number(this.state.index)] = this.state.edu;
-        this.setState({ data: [...temp] });
-        this.close();
+    if (validation()) {
+      let temp = data;
+      if (!isEdit) {
+        temp[Number(index)] = edu;
+        setData([...temp]);
+        close();
         return;
       }
-      temp.push(this.state.edu);
-      this.setState({ data: [...temp] });
-      this.close();
+      temp.push(edu);
+      setData([...temp]);
+      close();
     }
   };
 
-  render() {
-    const { course, clgName, startYear, endYear, city } = this.state.edu;
-    let className = '';
-    if (this.state.isActive) {
-      className = 'unActive';
-    } else {
-      className = '';
-    }
+  const { course, clgName, startYear, endYear, city } = edu;
 
-    return (
-      <div className="container">
-        <h1>Education</h1>
-        <DisplayEdu info={this.state.data} edit={this.handleEdit} />
-        <div>
-          <button onClick={this.showForm} className="addButton">
-            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add Education
-            Details
-          </button>
-          <form className={className}>
-            <label htmlFor="course">Course:</label>
-            <input
-              type="text"
-              name="course"
-              id="course"
-              value={course}
-              onChange={this.handleChange}
-            />
-            <label htmlFor="clgName">Collage Name:</label>
-            <input
-              type="text"
-              name="clgName"
-              id="clgName"
-              value={clgName}
-              onChange={this.handleChange}
-            />
-            <label htmlFor="startYear">Start Year:</label>
-            <input
-              type="text"
-              name="startYear"
-              id="startYear"
-              value={startYear}
-              onChange={this.handleChange}
-              placeholder="2017"
-            />
-            <label htmlFor="endYear">End Year:</label>
-            <input
-              type="text"
-              name="endYear"
-              id="endYear"
-              value={endYear}
-              placeholder="2021"
-              onChange={this.handleChange}
-            />
-            <label htmlFor="city">City:</label>
-            <input
-              type="text"
-              name="city"
-              id="city"
-              value={city}
-              onChange={this.handleChange}
-            />
-            <div className="buttonContainer">
-              <button
-                onClick={this.submitForm}
-                className="saveButton"
-                type="submit"
-              >
-                save
-              </button>
-              <button onClick={this.cancel} className="cancelButton">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
+  return (
+    <div className="container">
+      <h1>Education</h1>
+      <DisplayEdu info={data} edit={handleEdit} />
+      <div>
+        <button onClick={showForm} className="addButton">
+          <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add Education
+          Details
+        </button>
+        <form className={className}>
+          <label htmlFor="course">Course:</label>
+          <input
+            type="text"
+            name="course"
+            id="course"
+            value={course}
+            onChange={handleChange}
+          />
+          <label htmlFor="clgName">Collage Name:</label>
+          <input
+            type="text"
+            name="clgName"
+            id="clgName"
+            value={clgName}
+            onChange={handleChange}
+          />
+          <label htmlFor="startYear">Start Year:</label>
+          <input
+            type="text"
+            name="startYear"
+            id="startYear"
+            value={startYear}
+            onChange={handleChange}
+            placeholder="2017"
+          />
+          <label htmlFor="endYear">End Year:</label>
+          <input
+            type="text"
+            name="endYear"
+            id="endYear"
+            value={endYear}
+            placeholder="2021"
+            onChange={handleChange}
+          />
+          <label htmlFor="city">City:</label>
+          <input
+            type="text"
+            name="city"
+            id="city"
+            value={city}
+            onChange={handleChange}
+          />
+          <div className="buttonContainer">
+            <button onClick={submitForm} className="saveButton" type="submit">
+              save
+            </button>
+            <button onClick={cancel} className="cancelButton">
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default EducationInfo;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenFancy, faUser } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,97 +17,84 @@ function GeneralDisplay(props) {
   );
 }
 
-class GeneralInfo extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      form: {
-        firstName: '',
-        lastName: '',
-        phNumber: '',
-        url: '',
-      },
-      isActive: true,
-    };
-    this.handleChange = this.handleChange.bind(this);
-    this.submitForm = this.submitForm.bind(this);
-    this.editForm = this.editForm.bind(this);
-  }
+function GeneralInfo() {
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    phNumber: '',
+    url: '',
+  });
 
-  handleChange = (e) => {
-    this.setState({
-      form: { ...this.state.form, [e.target.name]: e.target.value },
-    });
+  let [className, setClassName] = useState('');
+  let [edit, setEdit] = useState('editButton');
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  submitForm = (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
-    this.setState({ isActive: false });
+    setClassName((className = 'unActive'));
+    setEdit((edit += ' editActive'));
   };
 
-  editForm = () => {
-    this.setState({ isActive: true });
+  const editForm = () => {
+    setClassName((className = ' '));
+    setEdit((edit = 'editButton'));
   };
 
-  render() {
-    let className = '';
-    let edit = 'editButton';
-    if (!this.state.isActive) {
-      className += ' unActive';
-      edit += ' editActive';
-    }
-    const { firstName, lastName, phNumber, url } = this.state.form;
-    return (
-      <div className="generalContainer">
-        <GeneralDisplay content={this.state.form} />
-        <form onSubmit={this.submitForm} className={className}>
-          <h2>
-            <FontAwesomeIcon icon={faUser}></FontAwesomeIcon> Personal Details
-          </h2>
-          <input
-            type="text"
-            value={firstName}
-            name="firstName"
-            onChange={this.handleChange}
-            placeholder="First Name"
-            required
-          />
-          <input
-            type="text"
-            value={lastName}
-            name="lastName"
-            onChange={this.handleChange}
-            placeholder="Last Name"
-          />
-          <input
-            type="tel"
-            value={phNumber}
-            name="phNumber"
-            onChange={this.handleChange}
-            placeholder="Ph Number"
-            required
-          />
-          <input
-            type="url"
-            value={url}
-            name="url"
-            onChange={this.handleChange}
-            placeholder="personal link (github,portfolio)"
-          />
-          <div>
-            <button className="saveButton" type="submit">
-              Save
-            </button>
-          </div>
-        </form>
-        <div className={edit}>
-          <button onClick={this.editForm}>
-            <FontAwesomeIcon icon={faPenFancy}></FontAwesomeIcon>
+  const { firstName, lastName, phNumber, url } = form;
+
+  return (
+    <div className="generalContainer">
+      <GeneralDisplay content={form} />
+      <form onSubmit={submitForm} className={className}>
+        <h2>
+          <FontAwesomeIcon icon={faUser}></FontAwesomeIcon> Personal Details
+        </h2>
+        <input
+          type="text"
+          value={firstName}
+          name="firstName"
+          onChange={handleChange}
+          placeholder="First Name"
+          required
+        />
+        <input
+          type="text"
+          value={lastName}
+          name="lastName"
+          onChange={handleChange}
+          placeholder="Last Name"
+        />
+        <input
+          type="tel"
+          value={phNumber}
+          name="phNumber"
+          onChange={handleChange}
+          placeholder="Ph Number"
+          required
+        />
+        <input
+          type="url"
+          value={url}
+          name="url"
+          onChange={handleChange}
+          placeholder="personal link (github,portfolio)"
+        />
+        <div>
+          <button className="saveButton" type="submit">
+            Save
           </button>
         </div>
+      </form>
+      <div className={edit}>
+        <button onClick={editForm}>
+          <FontAwesomeIcon icon={faPenFancy}></FontAwesomeIcon>
+        </button>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default GeneralInfo;

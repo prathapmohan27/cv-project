@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faPenFancy } from '@fortawesome/free-solid-svg-icons';
 
@@ -29,149 +29,142 @@ function DisplayExp(props) {
   );
 }
 
-class Experience extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      exp: {
-        position: '',
-        company: '',
-        experience: '',
-        city: '',
-      },
-      data: [],
-      index: '',
-      isActive: true,
-      isEdit: true,
-    };
-  }
-  validation = () => {
-    const { position, company, experience, city } = this.state.exp;
+function Experience() {
+  // constructor() {
+  //   super();
+  //   this.state = {
+  // exp: {
+  //   position: '',
+  //   company: '',
+  //   experience: '',
+  //   city: '',
+  // },
+  //     data: [],
+  //     index: '',
+  //     isActive: true,
+  //     isEdit: true,
+  //   };
+  // }
+  const [exp, setExp] = useState({
+    position: '',
+    company: '',
+    experience: '',
+    city: '',
+  });
+  const [data, setData] = useState([]);
+  const [index, setIndex] = useState(' ');
+  const [isEdit, setIsEdit] = useState(true);
+  const [className, setClassName] = useState('unActive');
+
+  const validation = () => {
+    const { position, company, experience, city } = exp;
     if (!position || !company || !experience || !city) {
       alert('Please make sure all fields');
       return false;
     }
     return true;
   };
-  cancel = (e) => {
+  const cancel = (e) => {
     e.preventDefault();
-    this.close();
+    close();
   };
-  showForm = () => {
-    this.setState({
-      isActive: false,
+  const showForm = () => {
+    setClassName(' ');
+  };
+  const close = () => {
+    setExp({
+      position: '',
+      company: '',
+      experience: '',
+      city: '',
     });
+    setClassName('unActive');
+    setIndex(' ');
+    setIsEdit(true);
   };
-  close = () => {
-    this.setState({
-      exp: {
-        position: '',
-        company: '',
-        experience: '',
-        city: '',
-      },
-      isActive: true,
-      isEdit: true,
-      index: '  ',
-    });
+  const handleChange = (e) => {
+    setExp({ ...exp, [e.target.name]: e.target.value });
   };
-  handleChange = (e) => {
-    this.setState({
-      exp: { ...this.state.exp, [e.target.name]: e.target.value },
-    });
+  const handleEdit = (e) => {
+    showForm();
+    setExp(Object.assign(data[Number(e.target.id)]));
+    setIndex(e.target.id);
+    setIsEdit(false);
   };
-  handleEdit = (e) => {
-    this.showForm();
-    this.setState({
-      isEdit: false,
-      index: e.target.id,
-      exp: Object.assign(this.state.data[Number(e.target.id)]),
-    });
-  };
-  submitForm = (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
-    if (this.validation()) {
-      let temp = this.state.data;
-      if (!this.state.isEdit) {
-        temp[Number(this.state.index)] = this.state.exp;
-        this.setState({ data: [...temp] });
-        this.close();
+    if (validation()) {
+      let temp = data;
+      if (!isEdit) {
+        temp[Number(index)] = exp;
+        setData([...temp]);
+        close();
         return;
       }
-      temp.push(this.state.exp);
-      this.setState({ data: [...temp] });
-      this.close();
+      temp.push(exp);
+      setData([...temp]);
+      close();
     }
   };
-  render() {
-    const { position, company, experience, city } = this.state.exp;
-    let className = '';
-    if (this.state.isActive) {
-      className = 'unActive';
-    } else {
-      className = '';
-    }
-    return (
-      <div className="container">
-        <h1>Experience</h1>
-        <DisplayExp info={this.state.data} edit={this.handleEdit} />
-        <div>
-          <button className="addButton" onClick={this.showForm}>
-            <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add Experience
-            Details
-          </button>
-          <form className={className}>
-            <label htmlFor="position">Position:</label>
-            <input
-              type="text"
-              name="position"
-              value={position}
-              id="position"
-              onChange={this.handleChange}
-            />
-            <label htmlFor="company">Company:</label>
-            <input
-              type="text"
-              name="company"
-              value={company}
-              id="company"
-              onChange={this.handleChange}
-            />
 
-            <label htmlFor="experience">Experience:</label>
-            <input
-              type="text"
-              name="experience"
-              value={experience}
-              id="experience"
-              onChange={this.handleChange}
-            />
+  const { position, company, experience, city } = exp;
 
-            <label htmlFor="City">City:</label>
-            <input
-              type="text"
-              name="city"
-              value={city}
-              id="city"
-              onChange={this.handleChange}
-            />
-            <div className="buttonContainer">
-              <button
-                onClick={this.submitForm}
-                className="saveButton"
-                type="submit"
-              >
-                save
-              </button>
-              <button onClick={this.cancel} className="cancelButton">
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
+  return (
+    <div className="container">
+      <h1>Experience</h1>
+      <DisplayExp info={data} edit={handleEdit} />
+      <div>
+        <button className="addButton" onClick={showForm}>
+          <FontAwesomeIcon icon={faPlus}></FontAwesomeIcon> Add Experience
+          Details
+        </button>
+        <form className={className}>
+          <label htmlFor="position">Position:</label>
+          <input
+            type="text"
+            name="position"
+            value={position}
+            id="position"
+            onChange={handleChange}
+          />
+          <label htmlFor="company">Company:</label>
+          <input
+            type="text"
+            name="company"
+            value={company}
+            id="company"
+            onChange={handleChange}
+          />
+
+          <label htmlFor="experience">Experience:</label>
+          <input
+            type="text"
+            name="experience"
+            value={experience}
+            id="experience"
+            onChange={handleChange}
+          />
+
+          <label htmlFor="City">City:</label>
+          <input
+            type="text"
+            name="city"
+            value={city}
+            id="city"
+            onChange={handleChange}
+          />
+          <div className="buttonContainer">
+            <button onClick={submitForm} className="saveButton" type="submit">
+              save
+            </button>
+            <button onClick={cancel} className="cancelButton">
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default Experience;
